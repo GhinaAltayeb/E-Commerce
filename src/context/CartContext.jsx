@@ -110,13 +110,20 @@ const CartProvider = ({ children }) => {
         dispatch({ type: 'CLEAR_CART' })
     }
 
-    const getCartTotal = useMemo(() => {
-        return state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
-    },[state.items])
+    const cartTotal = useMemo(() => {
+        return state.items.reduce(
+            (total, item) => total + item.price * item.quantity,
+            0
+        )
+    }, [state.items])
 
-    const getCartCount = useMemo(() => {
-        return state.items.reduce((count, item) => count + item.quantity, 0)
-    },[state.items])
+
+    const cartCount = useMemo(() => {
+        return state.items.reduce(
+            (count, item) => count + item.quantity,
+            0
+        )
+    }, [state.items])
 
     return (
         <CartContext.Provider value={{
@@ -125,8 +132,8 @@ const CartProvider = ({ children }) => {
             removeFromCart,
             updateQuantity,
             clearCart,
-            getCartTotal,
-            getCartCount
+            cartTotal,
+            cartCount
         }}>
             {children}
         </CartContext.Provider>

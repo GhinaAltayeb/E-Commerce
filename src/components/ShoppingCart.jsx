@@ -20,7 +20,7 @@ import { useCart } from '@/context/CartContext';
 import CartCard from './CartCard';
 
 function ShoppingCart() {
-    const { cart, getCartTotal } = useCart()
+    const { cart, cartTotal, cartCount } = useCart()
 
     return (
         <Drawer
@@ -31,7 +31,7 @@ function ShoppingCart() {
                 <FaCartShopping />
                 {cart.length > 0 && (
                     <span className="absolute -top-2 -right-4 bg-red-400 text-white text-xsmall rounded-full w-5 h-5 flex items-center justify-center">
-                        {cart.reduce((total, item) => total + item.quantity, 0)}
+                        {cartCount}
                     </span>
                 )}
             </DrawerTrigger>
@@ -63,7 +63,7 @@ function ShoppingCart() {
                         <div className='border-t-2 border-t-gray-300 px-4 py-2 flex flex-col gap-3'>
                             <span className='flex justify-between items-center font-medium'>
                                 SUBTOTAL
-                                <span className="text-xl text-secondary">${getCartTotal().toFixed(2)}</span>
+                                <span className="text-xl text-secondary">${cartTotal.toFixed(2)}</span>
                             </span>
                             <button className='main-btn flex justify-center items-center gap-2 w-full'>
                                 Checkout <IoMdArrowForward size={20} />
