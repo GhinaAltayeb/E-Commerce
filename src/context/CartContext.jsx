@@ -1,4 +1,4 @@
-import React, { act, createContext, useContext, useEffect, useReducer, useState } from 'react'
+import React, { act, createContext, useContext, useEffect, useMemo, useReducer, useState } from 'react'
 
 const CartContext = createContext()
 
@@ -16,11 +16,11 @@ const cartReducer = (state, action) => {
                     )
                 }
             }
-        }
             return {
                 ...state,
                 items: [...state.items, { ...action.payload, quantity: 1 }]
             }
+        }
 
         case 'REMOVE_FROM_CART':
             return {
@@ -94,7 +94,6 @@ const CartProvider = ({ children }) => {
         }
     }, [state.items, isInitialized])
 
-
     const addToCart = (product) => {
         dispatch({ type: 'ADD_TO_CART', payload: product })
     }
@@ -111,13 +110,13 @@ const CartProvider = ({ children }) => {
         dispatch({ type: 'CLEAR_CART' })
     }
 
-    const getCartTotal = () => {
+    const getCartTotal = useMemo(() => {
         return state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
-    };
+    },[state.items])
 
-    const getCartCount = () => {
+    const getCartCount = useMemo(() => {
         return state.items.reduce((count, item) => count + item.quantity, 0)
-    };
+    },[state.items])
 
     return (
         <CartContext.Provider value={{

@@ -2,7 +2,7 @@ import React from 'react'
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 
 const Pagination = React.memo(({ currentPage, totalPages, onPageChange }) => {
-    if (totalPages <= 1) return null;
+    if (totalPages == 0) return null;
     return (
         <div className="flex justify-center items-center gap-2 mt-8">
             <button

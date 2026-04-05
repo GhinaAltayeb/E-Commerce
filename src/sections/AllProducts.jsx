@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext'
 import useDebounce from '@/hooks/useDebounce'
 import axios from 'axios'
 import React, { useCallback, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
 function AllProducts() {
     const [loading, setLoading] = useState(false)
@@ -24,13 +25,14 @@ function AllProducts() {
     const [searchTerm, setSearchTerm] = useState('');
     const debouncedSearchTerm = useDebounce(searchTerm);
 
+
     useEffect(() => {
         const getAllProducts = async () => {
             setLoading(true)
             setError("")
             try {
                 let url = `https://dummyjson.com/products?limit=${pagination.limit}&skip=${pagination.skip}`
-                if (debouncedSearchTerm) {
+                if (debouncedSearchTerm.trim() !== "") {
                     url = `https://dummyjson.com/products/search?q=${debouncedSearchTerm}&limit=${pagination.limit}&skip=${pagination.skip}`
                 }
                 const res = await axios.get(url)
@@ -42,7 +44,6 @@ function AllProducts() {
                         ...prev,
                         total: data.total,
                         skip: data.skip,
-                        limit: data.limit,
                     }))
                 }
             }
@@ -65,6 +66,9 @@ function AllProducts() {
             thumbnail: product.images?.[0] || product.thumbnail,
             brand: product.brand
         })
+        toast.success(`${product.title} added to your cart 🛒`, {
+            duration: 2000
+        })
     }
 
     const handlePageChange = useCallback((newPage) => {
@@ -76,13 +80,24 @@ function AllProducts() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value
+        setSearchTerm(value)
+
+        setPagination(prev => ({
+            ...prev,
+            current: 1,
+            skip: 0
+        }))
+    }
+
     return (
         <div className="p-12 py-8">
             <div className="mb-8">
                 <input
                     type="text"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearchChange}
                     placeholder="Search products..."
                     className="w-full max-w-[333px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
@@ -110,7 +125,7 @@ function AllProducts() {
                 )}
             </div>
 
-            {!loading && totalPages > 1 && (
+            {!loading && totalPages >= 1 && (
                 <div className="mt-8">
                     <Pagination
                         currentPage={pagination.current}
